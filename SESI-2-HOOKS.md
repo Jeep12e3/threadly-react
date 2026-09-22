@@ -6,7 +6,7 @@
 - Node.js & npm sudah terinstall (cek: `node -v` dan `npm -v`).
 
 > 🎯 **Target Sesi 2:** paham 3 hooks paling penting → `useState`, `useEffect`, `useRef`.
-> Plus ada **🎁 bonus** di paling bawah buat nambah wawasan.
+> Plus ada **🎁 bonus** di paling bawah untuk tau menahu :).
 
 ---
 
@@ -16,18 +16,16 @@ Sesi ini dibagi jadi **2 fase**:
 
 | Fase | Ngapain | Di mana |
 |---|---|---|
-| **Fase 1 — Belajar Konsep** | Pahamin `useState`, `useEffect`, `useRef` satu-satu | Di **project kosong bikinan sendiri** (playground) |
-| **Fase 2 — Praktek Beneran** | Terapin hooks ke aplikasi nyata | Di project **Threadly** |
-
-Fase 1 dulu — kita main-main di tempat kosong biar fokus ke **konsep**, tanpa kepikiran hal lain. Kalau udah paham, baru masuk ke aplikasi beneran di Fase 2.
+| **Fase 1 — Belajar Konsep** | Pahamin `useState`, `useEffect`, `useRef` satu-satu | Di **local** |
+| **Fase 2 — Praktek Beneran** | Terapin hooks ke aplikasi nyata | Dari repo **Threadly**(twitter clone) |
 
 ---
 
-# 🧪 FASE 1 — Belajar Konsep di Playground
+# 🧪 FASE 1 — Belajar Konsep Hooks
 
 ## Step 0: Bikin Playground Kosong
 
-Ingat cara bikin project Vite dari Sesi 1? Sekarang kita ulang buat bikin tempat latihan.
+Revisi sesi 1 nich.
 Buka terminal, lalu:
 
 ```bash
@@ -37,12 +35,7 @@ npm install
 npm run dev
 ```
 
-`ctrl + click` link localhost-nya → project kosong siap dipakai. 🎉
-
-> 💡 Kita sengaja pakai project **baru & kosong** buat Fase 1. Tujuannya biar bisa fokus
-> ke konsep hooks-nya aja, tanpa kebingungan sama kode aplikasi yang gede.
-
-Buat latihan, kamu bisa **ganti isi `src/App.jsx`** dengan contoh-contoh di bawah ini satu per satu.
+`ctrl + click` link localhost-nya
 
 ---
 
@@ -78,17 +71,30 @@ function MyComponent() {
 
 **State** = data yang **bisa berubah** dan kalau berubah, **tampilan ikut update otomatis**.
 
-Coba tempel ini di `src/App.jsx` playground kamu:
+Coba tempel ini di `src/App.jsx`:
 
 ```jsx
 import { useState } from "react";
 
 export default function App() {
-  //      nilai skrg   cara ganti      nilai awal
+  //const [x, setX] = useState(y)
+  //dimana x adalah variabel yang menyimpan nilai, y adalah nilai awal dari variabel x
+  //setX -> fungsi untuk mengubah nilai x 
   const [count, setCount] = useState(0);
 
   return (
+    //1 command yang dijalanin
     <button onClick={() => setCount(count + 1)}>
+      Diklik {count} kali
+    </button>
+
+    //klo mw banyak isinya(tambah console.log):
+    <button 
+      onClick={() => {
+        count = count + 1;
+        console.log(count)
+      }}
+    >
       Diklik {count} kali
     </button>
   );
