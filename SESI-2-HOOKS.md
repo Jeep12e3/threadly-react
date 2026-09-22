@@ -439,3 +439,5 @@ function App() {
 - Buat app beneran yang butuh URL rapi & tombol back jalan → `react-router-dom` lebih pas.
 
 > 👀 **Good to know aja** — cukup tau kalau routing pakai state itu salah satu opsi, dan `react-router-dom` itu alternatifnya. Ga perlu dihafal.
+
+Ngomong-ngomong, Threadly juga pindah halaman pakai cara `useState` di atas. Kalau penasaran pengen liat versi Threadly yang udah pakai `react-router-dom`, ada di branch terpisah `feat/react-router` di repo Threadly — silakan diintip buat perbandingan. 🔍
