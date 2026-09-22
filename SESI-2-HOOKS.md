@@ -68,7 +68,6 @@ function MyComponent() {
 ---
 
 ## 1️⃣ useState — Ingatan Component
-
 **State** = data yang **bisa berubah** dan kalau berubah, **tampilan ikut update otomatis**.
 
 Coba tempel ini di `src/App.jsx`:
@@ -76,7 +75,7 @@ Coba tempel ini di `src/App.jsx`:
 ```jsx
 import { useState } from "react";
 
-export default function App() {
+function Counter() {
   //const [x, setX] = useState(y)
   //dimana x adalah variabel yang menyimpan nilai, y adalah nilai awal dari variabel x
   //setX -> fungsi untuk mengubah nilai x 
