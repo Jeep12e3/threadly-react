@@ -308,13 +308,14 @@ console.log({ username, password });   // { username: "...", password: "..." } �
 | `useRef` | Pegang elemen DOM / simpan nilai diam-diam | ❌ Tidak |
 
 Yeayy kalian udah paham dasar Hooks! 🥳
-Selanjutnya (Sesi 3) kita bakal ambil data dari internet (DummyJSON) & routing.
 
 ---
 
-# 🎁 BONUS (Take-Home): Bikin Custom Hook Sendiri
+# 🎁 BONUS — Good to Know
 
-> ⚠️ Bagian ini **ga sempat diajarin live**, tapi coba sendiri di rumah ya. Ga susah kok!
+> Bagian ini **di luar materi inti**. Ga wajib, tapi bagus buat nambah wawasan. Baca santai aja. 😎
+
+## ✨ Custom Hook — Bikin Hook Sendiri
 
 ### Apa itu Custom Hook?
 
@@ -364,11 +365,58 @@ function PostComposer({ currentUser, onNewPost }) {
 
 **Lihat bedanya?** Component jadi lebih bersih, dan `useLocalStorage` bisa dipakai di komponen lain juga.
 
-### 🎯 Tantangan buat kamu
+> 💡 Custom hook lain yang umum: `useDocumentTitle(title)` (bungkus `useEffect` untuk `document.title`),
+> atau `useWindowWidth()` (lebar layar yang update saat window di-resize). Intinya: **kalau ada logika hook yang berulang, bungkus jadi custom hook.**
 
-1. Bikin custom hook `useDocumentTitle(title)` yang isinya `useEffect` buat update `document.title`.
-   Terus pakai di `App.jsx` menggantikan `useEffect` judul tab tadi.
-2. Bikin `useWindowWidth()` yang mengembalikan lebar layar & update saat window di-resize
-   (petunjuk: `useState` + `useEffect` + event listener `resize` + **cleanup**!).
+---
 
-Selamat mencoba! Kalau berhasil, kamu udah selangkah lebih jago dari yang lain 😎🔥
+## 🧭 Cara Pindah Halaman — `useState` vs `react-router-dom`
+
+Di project Threadly ini, pindah halaman (login → home → profile) dibuat pakai **`useState`**:
+
+```jsx
+const [page, setPage] = useState("login");
+
+if (page === "login") return <LoginPage ... />;
+{page === "home" && <HomePage ... />}
+```
+
+Jadi "pindah halaman" = **ganti nilai state**. Simpel, ga perlu library tambahan, dan pas banget buat latihan `useState`. 👍
+
+Tapi ini **bukan satu-satunya cara**. Ada library populer bernama **`react-router-dom`** yang khusus untuk routing.
+
+### Bedanya apa?
+
+| | `useState` (cara di project ini) | `react-router-dom` |
+|---|---|---|
+| URL berubah? | ❌ Tetap `localhost:5173` | ✅ Berubah (`/home`, `/profile`) |
+| Tombol back/forward browser | ❌ Ga jalan | ✅ Jalan |
+| Bookmark / share link halaman | ❌ Ga bisa | ✅ Bisa |
+| Refresh → tetap di halaman itu | ❌ Balik ke awal | ✅ Tetap |
+| Perlu install library? | Ga perlu | Perlu (`npm i react-router-dom`) |
+
+### Sekilas kodenya (buat gambaran aja)
+
+```jsx
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Link to="/home">Home</Link>       {/* pindah halaman lewat URL */}
+      <Routes>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+**Jadi mana yang bener?** Dua-duanya bener 🙂
+- Buat app kecil / latihan → `useState` udah cukup.
+- Buat app beneran yang butuh URL rapi & tombol back jalan → `react-router-dom` lebih pas.
+
+> 👀 **Good to know aja** — cukup tau kalau routing pakai state itu salah satu opsi, dan `react-router-dom` itu alternatifnya. Ga perlu dihafal.
+
+Kalau penasaran pengen liat versi Threadly yang pakai `react-router-dom`, ada di branch terpisah `feat/react-router` di repo ini — silakan diintip buat perbandingan. 🔍
