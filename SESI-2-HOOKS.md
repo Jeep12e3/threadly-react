@@ -41,7 +41,6 @@ function MyComponent() {
 
 ## 1️⃣ useState — Ingatan Component
 
-> Ini sebenarnya sudah muncul di project Threadly. Kita review dulu biar mantap.
 
 **State** = data yang **bisa berubah** dan kalau berubah, **tampilan ikut update otomatis**.
 
@@ -49,7 +48,9 @@ function MyComponent() {
 import { useState } from "react";
 
 function Counter() {
-  //      nilai skrg   cara ganti      nilai awal
+  //const [x, setX] = useState(y)
+  //dimana x adalah variabel yang menyimpan nilai, y adalah nilai awal dari variabel x
+  //setX -> fungsi untuk mengubah nilai x 
   const [count, setCount] = useState(0);
 
   return (
@@ -73,12 +74,6 @@ Kalau nilai baru bergantung nilai lama, pakai bentuk **function** biar aman:
 
 ```jsx
 setCount((prev) => prev + 1); // ✅ lebih aman
-```
-
-Di Threadly, ini kepakai banget, contohnya waktu nambah post baru:
-
-```jsx
-setPosts((prev) => [newPost, ...prev]); // taruh post baru di paling atas
 ```
 
 > 💡 **Note:** `...prev` (spread) artinya "salin semua isi lama, terus tambahin".
