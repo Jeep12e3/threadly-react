@@ -1,24 +1,23 @@
-// 👉 TODO (Sesi 2): tambahkan "useEffect" dan "useRef" pada import di bawah.
+// 🧭 VERSI react-router-dom
+// Bedanya: setelah login sukses, pindah ke /home pakai useNavigate (bukan setPage).
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    // 👉 TODO (Sesi 2 - useRef): pointer ke input username
-    //    const usernameRef = useRef(null);
-    //    lalu pasang  ref={usernameRef}  di <input> username.
-
-    // 👉 TODO (Sesi 2 - useEffect): begitu halaman login muncul, fokus ke username.
-    //    useEffect(() => {
-    //      usernameRef.current.focus();
-    //    }, []);
+    const navigate = useNavigate(); // fungsi untuk pindah halaman lewat kode
 
     function handleSubmit(e) {
         e.preventDefault();
         const err = onLogin(username, password);
-        if (err) setError(err);
+        if (err) {
+            setError(err);
+            return;
+        }
+        navigate("/home"); // login sukses → pindah ke home
     }
 
     return (

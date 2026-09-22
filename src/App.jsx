@@ -1,7 +1,11 @@
-// 🧩 SESI 2 — HOOKS
-// Nanti kita akan pakai useEffect di sini. Untuk sekarang, useState aja dulu.
-// 👉 TODO (Sesi 2 - useEffect): tambahkan "useEffect" pada import di bawah ini.
-import { useState } from "react";
+// 🧭 VERSI react-router-dom
+// Bedanya dengan versi utama (branch main):
+//   - Navigasi TIDAK pakai useState "page" lagi.
+//   - Halaman ditentukan oleh URL (/login, /home, /profile) lewat <Routes>.
+//   - State auth & posts tetap di App (biar dibagikan ke semua halaman).
+
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -10,21 +14,13 @@ import { users } from "./data/user";
 import { posts as initialPosts } from "./data/posts";
 
 function App() {
-  const [page, setPage] = useState("login"); // "login" | "home" | "profile"
   const [currentUser, setCurrentUser] = useState(null);
   const [posts, setPosts] = useState(initialPosts);
   const [reactions, setReactions] = useState({});
 
-  // 👉 TODO (Sesi 2 - useEffect): Buat judul tab browser menampilkan jumlah post.
-  //    Target hasil: judul tab jadi  "Threadly (4)"  dan berubah tiap ada post baru.
-  //
-  //    Isi kerangka di bawah ini:
-  //
-  //    useEffect(() => {
-  //      document.title = /* ??? pakai posts.length */;
-  //    }, [ /* ??? efek harus jalan lagi kalau APA yang berubah? */ ]);
-  //
-  //    (jangan lupa import useEffect di baris paling atas file ini)
+  useEffect(() => {
+    document.title = `Threadly (${posts.length})`;
+  }, [posts]);
 
   function handleLogin(username, password) {
     const found = users.find(
@@ -32,44 +28,23 @@ function App() {
     );
     if (!found) return "Username atau password salah";
     setCurrentUser(found);
-    setPage("home");
     return null;
   }
 
   function handleLogout() {
     setCurrentUser(null);
-    setPage("login");
   }
-  
+
   function handleLike(postId) {
     const current = reactions[postId];
 
     setPosts((posts) =>
       posts.map((p) => {
         if (p.id !== postId) return p;
-
-        if (current === "like") {
-          // udah like → batal like
-          return {
-            ...p,
-            likes: p.likes - 1,
-          };
-        }
-
-        if (current === "dislike") {
-          // dari dislike → pindah ke like
-          return {
-            ...p,
-            likes: p.likes + 1,
-            dislikes: p.dislikes - 1,
-          };
-        }
-
-        // belum react
-        return {
-          ...p,
-          likes: p.likes + 1,
-        };
+        if (current === "like") return { ...p, likes: p.likes - 1 };
+        if (current === "dislike")
+          return { ...p, likes: p.likes + 1, dislikes: p.dislikes - 1 };
+        return { ...p, likes: p.likes + 1 };
       })
     );
 
@@ -78,36 +53,17 @@ function App() {
       [postId]: current === "like" ? null : "like",
     }));
   }
-  
+
   function handleDislike(postId) {
     const current = reactions[postId];
 
     setPosts((posts) =>
       posts.map((p) => {
         if (p.id !== postId) return p;
-
-        if (current === "dislike") {
-          // udah dislike → batal
-          return {
-            ...p,
-            dislikes: p.dislikes - 1,
-          };
-        }
-
-        if (current === "like") {
-          // dari like → pindah ke dislike
-          return {
-            ...p,
-            dislikes: p.dislikes + 1,
-            likes: p.likes - 1,
-          };
-        }
-
-        // belum react
-        return {
-          ...p,
-          dislikes: p.dislikes + 1,
-        };
+        if (current === "dislike") return { ...p, dislikes: p.dislikes - 1 };
+        if (current === "like")
+          return { ...p, dislikes: p.dislikes + 1, likes: p.likes - 1 };
+        return { ...p, dislikes: p.dislikes + 1 };
       })
     );
 
@@ -116,6 +72,7 @@ function App() {
       [postId]: current === "dislike" ? null : "dislike",
     }));
   }
+
   function handleNewPost(content) {
     const newPost = {
       id: Date.now(),
@@ -127,35 +84,52 @@ function App() {
     setPosts((prev) => [newPost, ...prev]);
   }
 
-  if (page === "login") {
-    return <LoginPage onLogin={handleLogin} />;
+  // Belum login → apa pun URL-nya, tampilkan halaman login.
+  if (!currentUser) {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        {/* URL lain diarahkan ke /login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
   }
 
+  // Sudah login → tampilkan Navbar + halaman sesuai URL.
   return (
     <>
-      <Navbar page={page} onNavigate={setPage} onLogout={handleLogout} />
+      <Navbar onLogout={handleLogout} />
 
-      {page === "home" && (
-        <HomePage
-          posts={posts}
-          users={users}
-          currentUser={currentUser}
-          reactions={reactions}
-          onLike={handleLike}
-          onDislike={handleDislike}
-          onNewPost={handleNewPost}
+      <Routes>
+        <Route
+          path="/home"
+          element={
+            <HomePage
+              posts={posts}
+              users={users}
+              currentUser={currentUser}
+              reactions={reactions}
+              onLike={handleLike}
+              onDislike={handleDislike}
+              onNewPost={handleNewPost}
+            />
+          }
         />
-      )}
-
-      {page === "profile" && (
-        <ProfilePage
-          posts={posts}
-          currentUser={currentUser}
-          reactions={reactions}
-          onLike={handleLike}
-          onDislike={handleDislike}
+        <Route
+          path="/profile"
+          element={
+            <ProfilePage
+              posts={posts}
+              currentUser={currentUser}
+              reactions={reactions}
+              onLike={handleLike}
+              onDislike={handleDislike}
+            />
+          }
         />
-      )}
+        {/* default: arahkan ke /home */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
     </>
   );
 }
