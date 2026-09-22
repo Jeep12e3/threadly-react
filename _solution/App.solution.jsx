@@ -1,7 +1,8 @@
-// 🧩 SESI 2 — HOOKS
-// Nanti kita akan pakai useEffect di sini. Untuk sekarang, useState aja dulu.
-// 👉 TODO (Sesi 2 - useEffect): tambahkan "useEffect" pada import di bawah ini.
-import { useState } from "react";
+// ✅ KUNCI JAWABAN (SOLUTION) — App.jsx
+// File ini BUKAN dipakai oleh aplikasi. Ini hanya referensi buat mentor / cek jawaban.
+// Beda dengan versi awal: ditambah 1 useEffect untuk update document.title.
+
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -15,16 +16,11 @@ function App() {
   const [posts, setPosts] = useState(initialPosts);
   const [reactions, setReactions] = useState({});
 
-  // 👉 TODO (Sesi 2 - useEffect): Buat judul tab browser menampilkan jumlah post.
-  //    Target hasil: judul tab jadi  "Threadly (4)"  dan berubah tiap ada post baru.
-  //
-  //    Isi kerangka di bawah ini:
-  //
-  //    useEffect(() => {
-  //      document.title = /* ??? pakai posts.length */;
-  //    }, [ /* ??? efek harus jalan lagi kalau APA yang berubah? */ ]);
-  //
-  //    (jangan lupa import useEffect di baris paling atas file ini)
+  // 🎯 useEffect: tiap kali jumlah "posts" berubah, judul tab browser ikut update.
+  // Coba tambah post baru → lihat teks di tab browser berubah otomatis.
+  useEffect(() => {
+    document.title = `Threadly (${posts.length})`;
+  }, [posts]); // dependency array: efek jalan lagi hanya kalau "posts" berubah
 
   function handleLogin(username, password) {
     const found = users.find(
@@ -40,36 +36,17 @@ function App() {
     setCurrentUser(null);
     setPage("login");
   }
-  
+
   function handleLike(postId) {
     const current = reactions[postId];
 
     setPosts((posts) =>
       posts.map((p) => {
         if (p.id !== postId) return p;
-
-        if (current === "like") {
-          // udah like → batal like
-          return {
-            ...p,
-            likes: p.likes - 1,
-          };
-        }
-
-        if (current === "dislike") {
-          // dari dislike → pindah ke like
-          return {
-            ...p,
-            likes: p.likes + 1,
-            dislikes: p.dislikes - 1,
-          };
-        }
-
-        // belum react
-        return {
-          ...p,
-          likes: p.likes + 1,
-        };
+        if (current === "like") return { ...p, likes: p.likes - 1 };
+        if (current === "dislike")
+          return { ...p, likes: p.likes + 1, dislikes: p.dislikes - 1 };
+        return { ...p, likes: p.likes + 1 };
       })
     );
 
@@ -78,36 +55,17 @@ function App() {
       [postId]: current === "like" ? null : "like",
     }));
   }
-  
+
   function handleDislike(postId) {
     const current = reactions[postId];
 
     setPosts((posts) =>
       posts.map((p) => {
         if (p.id !== postId) return p;
-
-        if (current === "dislike") {
-          // udah dislike → batal
-          return {
-            ...p,
-            dislikes: p.dislikes - 1,
-          };
-        }
-
-        if (current === "like") {
-          // dari like → pindah ke dislike
-          return {
-            ...p,
-            dislikes: p.dislikes + 1,
-            likes: p.likes - 1,
-          };
-        }
-
-        // belum react
-        return {
-          ...p,
-          dislikes: p.dislikes + 1,
-        };
+        if (current === "dislike") return { ...p, dislikes: p.dislikes - 1 };
+        if (current === "like")
+          return { ...p, dislikes: p.dislikes + 1, likes: p.likes - 1 };
+        return { ...p, dislikes: p.dislikes + 1 };
       })
     );
 
@@ -116,6 +74,7 @@ function App() {
       [postId]: current === "dislike" ? null : "dislike",
     }));
   }
+
   function handleNewPost(content) {
     const newPost = {
       id: Date.now(),
