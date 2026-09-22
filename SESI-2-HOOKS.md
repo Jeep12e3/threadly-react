@@ -3,11 +3,46 @@
 ## Requirements
 
 - Sudah paham materi **Sesi 1** (Component, JSX, Props).
-- Project React (Vite) sudah bisa jalan (`npm install` → `npm run dev`).
-- Di sesi ini kita pakai project **Threadly** (mini sosmed) sebagai bahan praktek.
+- Node.js & npm sudah terinstall (cek: `node -v` dan `npm -v`).
 
 > 🎯 **Target Sesi 2:** paham 3 hooks paling penting → `useState`, `useEffect`, `useRef`.
-> Plus ada **🎁 bonus custom hook** di paling bawah buat dibawa pulang.
+> Plus ada **🎁 bonus** di paling bawah buat nambah wawasan.
+
+---
+
+## 🗺️ Alur Sesi Ini
+
+Sesi ini dibagi jadi **2 fase**:
+
+| Fase | Ngapain | Di mana |
+|---|---|---|
+| **Fase 1 — Belajar Konsep** | Pahamin `useState`, `useEffect`, `useRef` satu-satu | Di **project kosong bikinan sendiri** (playground) |
+| **Fase 2 — Praktek Beneran** | Terapin hooks ke aplikasi nyata | Di project **Threadly** |
+
+Fase 1 dulu — kita main-main di tempat kosong biar fokus ke **konsep**, tanpa kepikiran hal lain. Kalau udah paham, baru masuk ke aplikasi beneran di Fase 2.
+
+---
+
+# 🧪 FASE 1 — Belajar Konsep di Playground
+
+## Step 0: Bikin Playground Kosong
+
+Ingat cara bikin project Vite dari Sesi 1? Sekarang kita ulang buat bikin tempat latihan.
+Buka terminal, lalu:
+
+```bash
+npm create vite@latest hooks-playground -- --template react
+cd hooks-playground
+npm install
+npm run dev
+```
+
+`ctrl + click` link localhost-nya → project kosong siap dipakai. 🎉
+
+> 💡 Kita sengaja pakai project **baru & kosong** buat Fase 1. Tujuannya biar bisa fokus
+> ke konsep hooks-nya aja, tanpa kebingungan sama kode aplikasi yang gede.
+
+Buat latihan, kamu bisa **ganti isi `src/App.jsx`** dengan contoh-contoh di bawah ini satu per satu.
 
 ---
 
@@ -41,14 +76,14 @@ function MyComponent() {
 
 ## 1️⃣ useState — Ingatan Component
 
-> Ini sebenarnya sudah muncul di project Threadly. Kita review dulu biar mantap.
-
 **State** = data yang **bisa berubah** dan kalau berubah, **tampilan ikut update otomatis**.
+
+Coba tempel ini di `src/App.jsx` playground kamu:
 
 ```jsx
 import { useState } from "react";
 
-function Counter() {
+export default function App() {
   //      nilai skrg   cara ganti      nilai awal
   const [count, setCount] = useState(0);
 
@@ -59,6 +94,8 @@ function Counter() {
   );
 }
 ```
+
+Klik tombolnya → angkanya naik otomatis. Itu state bekerja! ✨
 
 **Poin penting:**
 
@@ -72,17 +109,14 @@ function Counter() {
 Kalau nilai baru bergantung nilai lama, pakai bentuk **function** biar aman:
 
 ```jsx
-setCount((prev) => prev + 1); // ✅ lebih aman
+setCount((prev) => prev + 1); // ✅ lebih aman dari setCount(count + 1)
 ```
 
-Di Threadly, ini kepakai banget, contohnya waktu nambah post baru:
-
-```jsx
-setPosts((prev) => [newPost, ...prev]); // taruh post baru di paling atas
-```
-
-> 💡 **Note:** `...prev` (spread) artinya "salin semua isi lama, terus tambahin".
-> Kita **bikin array/objek baru**, bukan mengubah yang lama. Ini penting di React!
+> 💡 **Note tentang array/objek:** kalau state-nya array atau objek, JANGAN diubah langsung.
+> Bikin yang **baru** pakai spread (`...`):
+> ```jsx
+> setItems((prev) => [...prev, itemBaru]); // salin lama + tambah baru
+> ```
 
 ---
 
@@ -92,8 +126,8 @@ Kadang kita mau component **melakukan sesuatu di luar sekadar menampilkan JSX**,
 
 - ubah judul tab browser
 - simpan data ke `localStorage`
-- ambil data dari internet (nanti di sesi berikutnya)
-- pasang / lepas event listener
+- ambil data dari internet
+- pasang / lepas timer atau event listener
 
 Hal-hal ini disebut **side effect**. Tempatnya di `useEffect`.
 
@@ -105,30 +139,39 @@ useEffect(() => {
 }, [/* dependency array */]);
 ```
 
-### 🔑 Yang paling bikin bingung: Dependency Array `[]`
+### 🔑 Yang paling penting: Dependency Array `[]`
 
-Ini bagian **paling penting** dari `useEffect`. Isinya menentukan **KAPAN** efek dijalankan:
+Isinya menentukan **KAPAN** efek dijalankan:
 
 | Dependency Array | Kapan efek jalan? |
 |---|---|
 | `}, [])` **(kosong)** | **Sekali saja**, setelah render pertama |
-| `}, [posts])` | Setiap kali `posts` **berubah** (+ render pertama) |
+| `}, [count])` | Setiap kali `count` **berubah** (+ render pertama) |
 | `})` **(tidak ada array)** | **Setiap render** (jarang dipakai, sering jadi bug 😵) |
 
-### 🧪 Praktek A — Update judul tab (di `App.jsx`)
+### 🧪 Coba di playground
 
-Kita mau judul tab browser jadi `Threadly (4)`, dan berubah otomatis tiap ada post baru.
+Ganti `src/App.jsx` dengan ini — judul tab browser bakal ikut angka:
 
 ```jsx
 import { useState, useEffect } from "react";
 
-// ...di dalam App()
-useEffect(() => {
-  document.title = `Threadly (${posts.length})`;
-}, [posts]); // jalan lagi tiap "posts" berubah
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `Diklik ${count} kali`;
+  }, [count]); // efek jalan lagi tiap "count" berubah
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Diklik {count} kali
+    </button>
+  );
+}
 ```
 
-Coba: **tambah 1 post baru → lihat judul tab browser ikut berubah!** 🤯
+Klik tombol → **lihat judul tab browser ikut berubah!** 🤯
 
 ### 🧹 Cleanup Function (buat yang perlu "dibersihin")
 
@@ -136,11 +179,19 @@ Beberapa efek perlu "dibersihkan" biar ga numpuk (misal `setInterval`, event lis
 Caranya: **return sebuah function** di dalam `useEffect`.
 
 ```jsx
-useEffect(() => {
-  const id = setInterval(() => console.log("tick"), 1000);
+import { useState, useEffect } from "react";
 
-  return () => clearInterval(id); // 🧹 dibersihkan saat component hilang
-}, []);
+export default function App() {
+  const [detik, setDetik] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setDetik((d) => d + 1), 1000);
+
+    return () => clearInterval(id); // 🧹 dibersihkan saat component hilang
+  }, []); // [] kosong → timer dipasang sekali aja
+
+  return <h1>Sudah {detik} detik ⏱️</h1>;
+}
 ```
 
 > 💡 Kalau ga di-cleanup, timer-nya jalan terus walau component udah ga ada = bug + boros memori.
@@ -151,19 +202,23 @@ useEffect(() => {
 
 Kadang kita butuh **pegang elemen HTML asli**, contoh paling umum: **auto-focus** ke input.
 
-```jsx
-import { useRef } from "react";
+Coba di playground:
 
-function SearchBox() {
+```jsx
+import { useEffect, useRef } from "react";
+
+export default function App() {
   const inputRef = useRef(null); // 1. bikin ref, awalnya null
 
   useEffect(() => {
     inputRef.current.focus();    // 3. .current = elemen asli → panggil .focus()
   }, []);
 
-  return <input ref={inputRef} />; // 2. tempelkan ref ke elemen
+  return <input ref={inputRef} placeholder="Aku auto-focus!" />; // 2. tempelkan ref
 }
 ```
+
+Refresh → kursor langsung siap di input tanpa diklik. 😎
 
 **Cara kerja:**
 
@@ -181,76 +236,32 @@ function SearchBox() {
 > 💡 Aturan simpel: kalau perubahannya harus **kelihatan di layar**, pakai `useState`.
 > Kalau cuma butuh **akses elemen** atau simpan nilai tanpa update tampilan, pakai `useRef`.
 
-### 🧪 Praktek B — Auto-focus input username (di `LoginPage.jsx`)
-
-```jsx
-import { useState, useEffect, useRef } from "react";
-
-const usernameRef = useRef(null);
-
-useEffect(() => {
-  usernameRef.current.focus();
-}, []);
-
-// ...
-<input ref={usernameRef} type="text" placeholder="Username" ... />
-```
-
-Refresh halaman login → kursor langsung siap di kolom username. 😎
-
 ---
 
-## 🧪 Praktek Utama — Simpan Draft Post (Gabungan useState + useEffect + useRef)
+## ✅ Rangkuman Konsep
 
-File: `src/components/PostComposer.jsx`
+| Hook | Fungsi | Trigger render ulang? |
+|---|---|---|
+| `useState` | Simpan data yang berubah & tampil di layar | ✅ Ya |
+| `useEffect` | Jalankan "side effect" di waktu tertentu | — (dia bereaksi ke perubahan) |
+| `useRef` | Pegang elemen DOM / simpan nilai diam-diam | ❌ Tidak |
 
-Kita bikin: **draft tulisan otomatis tersimpan**, jadi kalau ke-refresh, tulisan ga hilang.
-
-```jsx
-import { useState, useEffect, useRef } from "react";
-
-const DRAFT_KEY = "threadly-draft";
-
-function PostComposer({ currentUser, onNewPost }) {
-  // baca draft lama sebagai nilai awal
-  const [content, setContent] = useState(() => localStorage.getItem(DRAFT_KEY) || "");
-  const textareaRef = useRef(null);
-
-  // auto-focus saat muncul
-  useEffect(() => {
-    textareaRef.current.focus();
-  }, []);
-
-  // simpan tiap kali content berubah
-  useEffect(() => {
-    localStorage.setItem(DRAFT_KEY, content);
-  }, [content]);
-
-  function handlePost() {
-    const trimmed = content.trim();
-    if (!trimmed || trimmed.length > 280) return;
-    onNewPost(trimmed);
-    setContent("");
-    localStorage.removeItem(DRAFT_KEY); // draft udah jadi post → hapus
-  }
-
-  // ...(pasang ref={textareaRef} di <textarea>)
-}
-```
-
-**Coba:** ketik sesuatu → refresh halaman (F5) → tulisannya masih ada! ✨
+Yeayy kalian udah paham dasar 3 Hooks! 🥳
+Sekarang saatnya coba ke aplikasi beneran → lanjut ke **Fase 2**.
 
 ---
 
 ## 🛠️ Tips & Tricks (buat debugging)
 
-### 1. Lihat dampak input ke `username` di Console
+### 1. Lihat perubahan state di Console
 
 Cara paling gampang lihat state berubah tiap ketik: taruh `console.log` di dalam component.
-State di React itu update **tiap ketikan**, jadi tiap huruf yang diketik = 1 log.
+State di React update **tiap kali berubah**, jadi tiap ketikan = 1 log.
 
 ```jsx
-function LoginPage({ onLogin }) {
+import { useState } from "react";
+
+export default function App() {
   const [username, setUsername] = useState("");
 
   console.log("username sekarang:", username); // 👀 jalan tiap render
@@ -282,14 +293,14 @@ Install extension **React Developer Tools** (Chrome/Firefox). Setelah itu di Dev
 ### 3. Lihat isi `localStorage`
 
 DevTools → tab **Application** (Chrome) → **Local Storage** → pilih `localhost`.
-Di sini kamu bisa lihat `threadly-draft` berubah tiap kamu ngetik. Bisa dihapus manual juga.
+Di sini kamu bisa lihat data yang tersimpan berubah real-time. Bisa dihapus manual juga.
 
 ### 4. `console.log` objek/array dengan rapi
 
 ```jsx
-console.log("posts:", posts);          // biasa
-console.table(posts);                  // 📊 tampilan tabel, enak buat array of object
-console.log({ username, password });   // { username: "...", password: "..." } — ada labelnya
+console.log("data:", data);          // biasa
+console.table(data);                 // 📊 tampilan tabel, enak buat array of object
+console.log({ username, password }); // { username: "...", password: "..." } — ada labelnya
 ```
 
 ### 5. Kalau layar putih / error
@@ -299,15 +310,36 @@ console.log({ username, password });   // { username: "...", password: "..." } �
 
 ---
 
-## ✅ Rangkuman
+# 🚀 FASE 2 — Praktek di Aplikasi Threadly
 
-| Hook | Fungsi | Trigger render ulang? |
+Sekarang kita pindah ke aplikasi beneran: **Threadly** (mini sosmed).
+Di sini kamu bakal nerapin 3 hooks yang udah dipahami tadi ke fitur nyata.
+
+## Setup
+
+Ikuti instruksi mentor untuk membuka project **Threadly**, lalu:
+
+```bash
+npm install
+npm run dev
+```
+
+## Yang bakal kita kerjain
+
+Di dalam kode Threadly ada beberapa bagian yang sengaja dikosongkan (ditandai `// TODO (Sesi 2)`).
+Tugas kamu mengisinya pakai hooks yang udah dipelajari:
+
+| Fitur | Hook yang dipakai | File |
 |---|---|---|
-| `useState` | Simpan data yang berubah & tampil di layar | ✅ Ya |
-| `useEffect` | Jalankan "side effect" di waktu tertentu | — (dia bereaksi ke perubahan) |
-| `useRef` | Pegang elemen DOM / simpan nilai diam-diam | ❌ Tidak |
+| Judul tab jadi `Threadly (jumlah post)` | `useEffect` | `src/App.jsx` |
+| Auto-focus input username saat buka login | `useRef` + `useEffect` | `src/pages/LoginPage.jsx` |
+| Auto-focus kotak tulis + simpan draft ke localStorage | `useRef` + `useEffect` + `useState` | `src/components/PostComposer.jsx` |
 
-Yeayy kalian udah paham dasar Hooks! 🥳
+> 💡 Konsepnya **sama persis** kayak yang di playground tadi — cuma sekarang diterapkan ke
+> data & elemen yang beneran (post, input login, kotak tulis). Kalau stuck, inget-inget lagi
+> contoh di Fase 1.
+
+**Contoh hasil akhir (fitur simpan draft):** ketik sesuatu di kotak tulis → refresh halaman (F5) → tulisannya masih ada! ✨
 
 ---
 
@@ -317,12 +349,9 @@ Yeayy kalian udah paham dasar Hooks! 🥳
 
 ## ✨ Custom Hook — Bikin Hook Sendiri
 
-### Apa itu Custom Hook?
-
 **Custom Hook** = function buatan sendiri yang **menggabungkan beberapa hook** biar bisa **dipakai ulang**.
 
-Ingat kode "simpan draft ke localStorage" di `PostComposer` tadi? Itu gabungan `useState` + `useEffect`.
-Kalau logika ini mau dipakai di banyak tempat, capek nulis ulang. Solusinya: **bungkus jadi 1 custom hook**.
+Misal logika "simpan sesuatu ke localStorage" (gabungan `useState` + `useEffect`) sering dipakai di banyak tempat. Daripada nulis ulang terus, bungkus jadi 1 hook:
 
 ### Aturan Custom Hook
 
@@ -330,8 +359,6 @@ Kalau logika ini mau dipakai di banyak tempat, capek nulis ulang. Solusinya: **b
 2. Boleh memanggil hook lain di dalamnya (`useState`, `useEffect`, dst).
 
 ### Contoh: `useLocalStorage`
-
-Buat file `src/hooks/useLocalStorage.js`:
 
 ```jsx
 import { useState, useEffect } from "react";
@@ -350,20 +377,14 @@ export function useLocalStorage(key, initialValue) {
 }
 ```
 
-### Cara pakai (di `PostComposer.jsx`)
+### Cara pakai
 
 ```jsx
-import { useLocalStorage } from "../hooks/useLocalStorage";
-
-function PostComposer({ currentUser, onNewPost }) {
-  // 1 baris ini menggantikan useState + useEffect localStorage tadi 🎉
-  const [content, setContent] = useLocalStorage("threadly-draft", "");
-
-  // ...sisanya sama
-}
+// dipakai persis seperti useState, tapi otomatis tersimpan di localStorage
+const [content, setContent] = useLocalStorage("draft", "");
 ```
 
-**Lihat bedanya?** Component jadi lebih bersih, dan `useLocalStorage` bisa dipakai di komponen lain juga.
+**Lihat bedanya?** Logika localStorage yang tadinya `useState` + `useEffect` sekarang cukup 1 baris, dan bisa dipakai ulang di komponen mana pun.
 
 > 💡 Custom hook lain yang umum: `useDocumentTitle(title)` (bungkus `useEffect` untuk `document.title`),
 > atau `useWindowWidth()` (lebar layar yang update saat window di-resize). Intinya: **kalau ada logika hook yang berulang, bungkus jadi custom hook.**
@@ -372,24 +393,24 @@ function PostComposer({ currentUser, onNewPost }) {
 
 ## 🧭 Cara Pindah Halaman — `useState` vs `react-router-dom`
 
-Di project Threadly ini, pindah halaman (login → home → profile) dibuat pakai **`useState`**:
+Aplikasi yang punya banyak halaman butuh cara buat pindah-pindah halaman. Salah satu cara paling sederhana: pakai **`useState`** buat nyimpen "halaman yang lagi aktif":
 
 ```jsx
-const [page, setPage] = useState("login");
+const [page, setPage] = useState("home");
 
-if (page === "login") return <LoginPage ... />;
-{page === "home" && <HomePage ... />}
+{page === "home" && <HomePage />}
+{page === "profile" && <ProfilePage />}
 ```
 
-Jadi "pindah halaman" = **ganti nilai state**. Simpel, ga perlu library tambahan, dan pas banget buat latihan `useState`. 👍
+Jadi "pindah halaman" = **ganti nilai state**. Simpel & ga perlu library tambahan. 👍
 
 Tapi ini **bukan satu-satunya cara**. Ada library populer bernama **`react-router-dom`** yang khusus untuk routing.
 
 ### Bedanya apa?
 
-| | `useState` (cara di project ini) | `react-router-dom` |
+| | Pakai `useState` | Pakai `react-router-dom` |
 |---|---|---|
-| URL berubah? | ❌ Tetap `localhost:5173` | ✅ Berubah (`/home`, `/profile`) |
+| URL berubah? | ❌ Tetap sama | ✅ Berubah (`/home`, `/profile`) |
 | Tombol back/forward browser | ❌ Ga jalan | ✅ Jalan |
 | Bookmark / share link halaman | ❌ Ga bisa | ✅ Bisa |
 | Refresh → tetap di halaman itu | ❌ Balik ke awal | ✅ Tetap |
@@ -418,5 +439,3 @@ function App() {
 - Buat app beneran yang butuh URL rapi & tombol back jalan → `react-router-dom` lebih pas.
 
 > 👀 **Good to know aja** — cukup tau kalau routing pakai state itu salah satu opsi, dan `react-router-dom` itu alternatifnya. Ga perlu dihafal.
-
-Kalau penasaran pengen liat versi Threadly yang pakai `react-router-dom`, ada di branch terpisah `feat/react-router` di repo ini — silakan diintip buat perbandingan. 🔍
