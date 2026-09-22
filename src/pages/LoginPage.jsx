@@ -1,9 +1,19 @@
+// 👉 TODO (Sesi 2): tambahkan "useEffect" dan "useRef" pada import di bawah.
 import { useState } from "react";
 
 function LoginPage({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    // 👉 TODO (Sesi 2 - useRef): pointer ke input username
+    //    const usernameRef = useRef(null);
+    //    lalu pasang  ref={usernameRef}  di <input> username.
+
+    // 👉 TODO (Sesi 2 - useEffect): begitu halaman login muncul, fokus ke username.
+    //    useEffect(() => {
+    //      usernameRef.current.focus();
+    //    }, []);
 
     function handleSubmit(e) {
         e.preventDefault();

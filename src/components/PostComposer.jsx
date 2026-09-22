@@ -1,16 +1,40 @@
+// 👉 TODO (Sesi 2): tambahkan "useEffect" dan "useRef" pada import di bawah.
 import { useState } from "react";
 
 const MAX_CHARS = 280;
+// eslint-disable-next-line no-unused-vars -- dipakai nanti pas ngerjain TODO Sesi 2
+const DRAFT_KEY = "threadly-draft"; // nama "laci" penyimpanan di localStorage
 
 function PostComposer({ currentUser, onNewPost }) {
     const [content, setContent] = useState("");
     const isOver = content.length > MAX_CHARS;
+
+    // 👉 TODO (Sesi 2 - useRef): buat "pointer" ke elemen textarea.
+    //    const textareaRef = useRef(null);
+    //    lalu pasang  ref={textareaRef}  di <textarea> bawah.
+
+    // 👉 TODO (Sesi 2 - useEffect #1 / auto-focus):
+    //    Begitu composer muncul, kursor langsung siap di textarea.
+    //    useEffect(() => {
+    //      textareaRef.current.focus();
+    //    }, []); // <- [] kosong = jalan sekali saja setelah render pertama
+
+    // 👉 TODO (Sesi 2 - useEffect #2 / simpan draft):
+    //    Tiap "content" berubah, simpan ke localStorage biar ga hilang saat refresh.
+    //    useEffect(() => {
+    //      localStorage.setItem(DRAFT_KEY, content);
+    //    }, [content]);
+    //
+    //    BONUS: jadikan draft yang tersimpan sebagai nilai AWAL useState di atas:
+    //      useState(() => localStorage.getItem(DRAFT_KEY) || "")
 
     function handlePost() {
         const trimmed = content.trim();
         if (!trimmed || trimmed.length > MAX_CHARS) return;
         onNewPost(trimmed);
         setContent("");
+        // 👉 TODO (Sesi 2): setelah jadi post, hapus draft:
+        //    localStorage.removeItem(DRAFT_KEY);
     }
 
     return (
