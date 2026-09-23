@@ -1,22 +1,27 @@
-function Navbar({ page, onNavigate, onLogout }) {
+// 🧭 VERSI react-router-dom
+// Pakai <NavLink> untuk pindah halaman lewat URL.
+// NavLink otomatis kasih class "active" kalau URL-nya lagi cocok → ga perlu cek manual.
+import { NavLink } from "react-router-dom";
+
+function Navbar({ onLogout }) {
     return (
         <nav className="navbar">
         <div className="navbar-content">
             <h1 className="logo">threadly</h1>
 
             <div className="nav-links">
-            <button
-                className={page === "home" ? "active" : ""}
-                onClick={() => onNavigate("home")}
+            <NavLink
+                to="/home"
+                className={({ isActive }) => (isActive ? "active" : "")}
             >
                 Home
-            </button>
-            <button
-                className={page === "profile" ? "active" : ""}
-                onClick={() => onNavigate("profile")}
+            </NavLink>
+            <NavLink
+                to="/profile"
+                className={({ isActive }) => (isActive ? "active" : "")}
             >
                 Profile
-            </button>
+            </NavLink>
             <button onClick={onLogout}>Logout</button>
             </div>
         </div>
