@@ -152,9 +152,9 @@ Isinya menentukan **KAPAN** efek dijalankan:
 |---|---|
 | `}, [])` **(kosong)** | **Sekali saja**, setelah render pertama |
 | `}, [count])` | Setiap kali `count` **berubah** (+ render pertama) |
-| `})` **(tidak ada array)** | **Setiap render** (jarang dipakai, sering jadi bug 😵) |
+| `})` **(tidak ada array)** | **Setiap render** (jarang dipakai, sering jadi bug) |
 
-### 🧪 Coba di playground
+### 🧪 Coba2
 
 Ganti `src/App.jsx` dengan ini — judul tab browser bakal ikut angka:
 
@@ -176,7 +176,7 @@ export default function App() {
 }
 ```
 
-Klik tombol → **lihat judul tab browser ikut berubah!** 🤯
+Klik tombol → **lihat judul tab browser ikut berubah!** 
 
 ### 🧹 Cleanup Function (buat yang perlu "dibersihin")
 
