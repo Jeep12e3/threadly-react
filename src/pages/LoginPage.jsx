@@ -7,13 +7,10 @@ function LoginPage({ onLogin }) {
     const [error, setError] = useState("");
 
     // 👉 TODO (Sesi 2 - useRef): pointer ke input username
-    //    const usernameRef = useRef(null);
-    //    lalu pasang  ref={usernameRef}  di <input> username.
+
 
     // 👉 TODO (Sesi 2 - useEffect): begitu halaman login muncul, fokus ke username.
-    //    useEffect(() => {
-    //      usernameRef.current.focus();
-    //    }, []);
+
 
     function handleSubmit(e) {
         e.preventDefault();
