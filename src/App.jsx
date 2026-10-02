@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
+import FetchDummyJSON from "./pages/FetchDummyJson";
 import { users } from "./data/user";
 import { posts as initialPosts } from "./data/posts";
-// import HomePageSol from "../_solution/HomePage.solution";
-import FetchDummyJSON from "./pages/FetchDummyJson";
 
 function App() {
-  const [page, setPage] = useState("login"); // "login" | "home" | "profile"
   const [currentUser, setCurrentUser] = useState(null);
   const [posts, setPosts] = useState(initialPosts);
   const [reactions, setReactions] = useState({});
@@ -29,14 +28,12 @@ function App() {
     if (!found) return "Username atau password salah";
 
     setCurrentUser(found);
-    setPage("home");
 
     return null;
   }
 
   function handleLogout() {
     setCurrentUser(null);
-    setPage("login");
   }
 
   function handleLike(postId) {
@@ -127,44 +124,62 @@ function App() {
     setPosts((prev) => [newPost, ...prev]);
   }
 
-  if (page === "login") {
-    return <LoginPage onLogin={handleLogin} />;
-  }
-
   return (
     <>
-      <Navbar
-        page={page}
-        onNavigate={setPage}
-        onLogout={handleLogout}
-      />
+      {/* Navbar cuma muncul kalau sudah login */}
+      {currentUser && <Navbar onLogout={handleLogout} />}
 
-      {page === "home" && (
-        <HomePage
-          posts={posts}
-          users={users}
-          currentUser={currentUser}
-          reactions={reactions}
-          onLike={handleLike}
-          onDislike={handleDislike}
-          onNewPost={handleNewPost}
+      <Routes>
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+
+        {/* Route yang butuh login: kalau belum login → dilempar ke /login */}
+        <Route
+          path="/home"
+          element={
+            currentUser ? (
+              <HomePage
+                posts={posts}
+                users={users}
+                currentUser={currentUser}
+                reactions={reactions}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                onNewPost={handleNewPost}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
-      )}
 
-      {page === "profile" && (
-        <ProfilePage
-          posts={posts}
-          currentUser={currentUser}
-          reactions={reactions}
-          onLike={handleLike}
-          onDislike={handleDislike}
+        <Route
+          path="/profile"
+          element={
+            currentUser ? (
+              <ProfilePage
+                posts={posts}
+                currentUser={currentUser}
+                reactions={reactions}
+                onLike={handleLike}
+                onDislike={handleDislike}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
-      )}
 
-      {page === "fetch" && (
-        // <HomePageSol/> no no diaktifin yah, coba dlu sndiri
-        <FetchDummyJSON />
-      )}
+        <Route
+          path="/fetch"
+          element={currentUser ? <FetchDummyJSON /> : <Navigate to="/login" />}
+        />
+
+        {/* URL lain (termasuk "/") → arahkan ke /home kalau login, atau /login kalau belum */}
+        <Route
+          path="*"
+          element={<Navigate to={currentUser ? "/home" : "/login"} />}
+        />
+      </Routes>
     </>
   );
 }

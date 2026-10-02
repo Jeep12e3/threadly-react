@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -8,6 +9,9 @@ function LoginPage({ onLogin }) {
   // useRef:
   // Membuat "pointer" ke input username
   const usernameRef = useRef(null);
+
+  // useNavigate: buat pindah halaman lewat kode (setelah login sukses)
+  const navigate = useNavigate();
 
   // useEffect:
   // Begitu halaman login muncul, langsung fokus ke input username
@@ -20,7 +24,12 @@ function LoginPage({ onLogin }) {
 
     const err = onLogin(username, password);
 
-    if (err) setError(err);
+    if (err) {
+      setError(err);
+    } else {
+      // Login sukses → pindah ke /home
+      navigate("/home");
+    }
   }
 
   return (

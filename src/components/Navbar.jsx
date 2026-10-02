@@ -1,29 +1,39 @@
-function Navbar({ page, onNavigate, onLogout }) {
+// Navigasi pakai react-router-dom.
+// NavLink = seperti Link, tapi otomatis kasih class "active" kalau URL-nya cocok.
+import { NavLink } from "react-router-dom";
+
+function Navbar({ onLogout }) {
     return (
         <nav className="navbar">
         <div className="navbar-content">
             <h1 className="logo">threadly</h1>
 
             <div className="nav-links">
-            <button
-                className={page === "home" ? "active" : ""}
-                onClick={() => onNavigate("home")}
+            <NavLink
+                to="/home"
+                className={({ isActive }) => (isActive ? "active" : "")}
             >
                 Home
-            </button>
-            <button
-                className={page === "fetch" ? "active" : ""}
-                onClick={() => onNavigate("fetch")}
+            </NavLink>
+
+            <NavLink
+                to="/fetch"
+                className={({ isActive }) => (isActive ? "active" : "")}
             >
                 Fetch
-            </button>
-            <button
-                className={page === "profile" ? "active" : ""}
-                onClick={() => onNavigate("profile")}
+            </NavLink>
+
+            <NavLink
+                to="/profile"
+                className={({ isActive }) => (isActive ? "active" : "")}
             >
                 Profile
-            </button>
-            <button onClick={onLogout}>Logout</button>
+            </NavLink>
+
+            {/* Logout: reset user lalu arahkan ke /login */}
+            <NavLink to="/login" onClick={onLogout}>
+                Logout
+            </NavLink>
             </div>
         </div>
         </nav>
