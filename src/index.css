@@ -82,7 +82,7 @@ h1, h2, h3 {
   gap: 8px;
 }
 
-/* target <a> (dari NavLink) & <button> sekaligus */
+
 .nav-links a,
 .nav-links button {
   border: none;
@@ -93,7 +93,7 @@ h1, h2, h3 {
   padding: 8px 14px;
   border-radius: 999px;
   cursor: pointer;
-  text-decoration: none; /* hilangkan underline bawaan <a> */
+  text-decoration: none; 
   transition: background 0.15s, color 0.15s;
 }
 
@@ -103,7 +103,7 @@ h1, h2, h3 {
   color: var(--accent);
 }
 
-/* link/menu yang sedang aktif (URL cocok) → NavLink otomatis kasih class "active" */
+
 .nav-links a.active,
 .nav-links button.active {
   background: var(--accent-bg);
