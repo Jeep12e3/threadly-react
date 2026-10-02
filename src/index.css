@@ -82,6 +82,8 @@ h1, h2, h3 {
   gap: 8px;
 }
 
+/* target <a> (dari NavLink) & <button> sekaligus */
+.nav-links a,
 .nav-links button {
   border: none;
   background: transparent;
@@ -91,12 +93,22 @@ h1, h2, h3 {
   padding: 8px 14px;
   border-radius: 999px;
   cursor: pointer;
+  text-decoration: none; /* hilangkan underline bawaan <a> */
   transition: background 0.15s, color 0.15s;
 }
 
+.nav-links a:hover,
 .nav-links button:hover {
   background: var(--accent-bg);
   color: var(--accent);
+}
+
+/* link/menu yang sedang aktif (URL cocok) → NavLink otomatis kasih class "active" */
+.nav-links a.active,
+.nav-links button.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* ===== Buttons ===== */
@@ -351,12 +363,6 @@ h1, h2, h3 {
   color: var(--text);
   opacity: 0.7;
   margin: 0;
-}
-
-.nav-links button.active {
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-weight: 600;
 }
 
 .login-error {
